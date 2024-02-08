@@ -1,0 +1,10 @@
+sealed-secrets: 
+  image:
+    tag: v0.24.4
+  ## @param tolerations [array] Tolerations for Sealed Secret pods assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: 
+    - key: kubernetes.azure.com/scalesetpriority
+      value: spot
+      effect: NoSchedule
