@@ -1,0 +1,37 @@
+# ApplicationSet to deploy ALL the helm charts for each env/cluster
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: addons
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+  - git:
+      repoURL: https://github.com/MaryamTavakkoli/argocd.git
+      revision: main
+      directories:
+      - path: helm-charts/*
+  template:
+    metadata:
+      name: '{{.path.basename}}'
+    spec:
+      project: default
+      sources:
+        - repoURL: https://github.com/MaryamTavakkoli/argocd.git
+          targetRevision: main
+          path: '{{.path.path}}'
+          helm:
+            #passCredentials: true
+            valueFiles:
+              - values.yaml
+              - "../environments/env1/{{.path.basename}}/values.yaml" # This ValueFile name HAS TO be changed according to the env/cluster # All value files in all chart folders should be called the same name
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{.path.basename}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+        - CreateNamespace=true
