@@ -1,0 +1,41 @@
+#### GitHub Repository Registeration ####
+# https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/#repositories
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: argocd-configuration-repo-token
+  namespace: argocd
+  labels:
+    argocd.argoproj.io/secret-type: repository
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: cluster-secret-store
+  target:
+    name: argocd-configuration-repo-token
+    creationPolicy: Owner
+    template:
+      data:
+        type: git
+        url: https://github.com/MaryamTavakkoli/argocd.git
+        username: "admin"
+        password: "{{ .password }}"
+  data:
+  - secretKey: password
+    remoteRef:
+      key: github-personal-access-token # Name of AKV secret for password
+
+# Alternatively, you can create a Kubernetes Secret
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: private-repo
+#   namespace: argocd
+#   labels:
+#     argocd.argoproj.io/secret-type: repository
+# stringData:
+#   type: git
+#   url: hhttps://github.com/MaryamTavakkoli/argocd.git
+#   password: <PASSWORD>
+#   username: "admin"

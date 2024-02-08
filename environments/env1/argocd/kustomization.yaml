@@ -1,3 +1,4 @@
+#### Installation of ArgoCD Helm Chart and other resources including the general helm charts ####
 namespace: argocd
 helmCharts:
 - name: argo-cd
@@ -8,7 +9,7 @@ helmCharts:
   valuesFile: base/values.yaml 
 
 resources:
-- base/namespace.yaml
-- base/repository-registeration.yaml
-- base/application-argocd.yaml
-- base/git-generator-directory-charts.yaml
+- base/namespace.yaml                        # ArgoCD Namespace
+- base/repository-registeration.yaml         # GitHub Repository Registeration
+- base/application-argocd.yaml               # Managing Argo with Argo (App of Apps concept) using ArgoCD Application definition
+- base/git-generator-directory-charts.yaml.  # Helm Chart installation with ApplicationSet
